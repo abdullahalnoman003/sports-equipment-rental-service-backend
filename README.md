@@ -1,0 +1,1 @@
+[!TIPS] This Repository contains the Backend code for GearUp, A Sports and Outdoor equipmnet rental service
