@@ -1,3 +1,6 @@
 node_modules
 dist
 .env
+inst
+/generated/prisma
+requirements.md
