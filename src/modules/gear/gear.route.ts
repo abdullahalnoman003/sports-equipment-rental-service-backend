@@ -3,8 +3,8 @@ import { gearController } from "./gear.controller.js";
 
 const router = Router();
 
-router.get("/", gearController.getAllGear)
 router.get("/:id", gearController.getGearById)
+router.get("/", gearController.getAllGear)
 
 
 export const gearRoute = router;

@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { prisma } from "../../lib/prisma.js";
 
 const getAllGearsFromDB = async (query : any) => {
@@ -35,6 +34,9 @@ const getAllGearsFromDB = async (query : any) => {
 
 }
 const getGearByIdFromDB = async (id: string) => {
+
+    const gear = await prisma.gear.findUnique({where: {id}});
+    return gear;
 
 }
 export const gearService = {    
