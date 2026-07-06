@@ -66,7 +66,30 @@ const loginUser = async (req: Request, res: Response) => {
     }
   }
 };
-const getLoggedInUser = async (req: Request, res: Response) => {};
+const getLoggedInUser = async (req: Request, res: Response) => {
+  try {
+    const {accessToken} = req.cookies;
+    if(!accessToken){
+      throw new AppError(httpstatus.UNAUTHORIZED, "Access token is required. Please Login again.");
+    }
+    const profile = await authService.loggedInUserInfo(accessToken);
+    res.status(httpstatus.OK).json({
+      success: true,
+      statusCode: httpstatus.OK,
+      message: "User profile fetched successfully",
+      data: profile,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        statusCode: error.statusCode,
+        message: error.message,
+        data: {},
+      });
+    }
+  }
+};
 
 export const authController = {
   registerUser,

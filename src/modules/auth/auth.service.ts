@@ -38,7 +38,15 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
       email,
       password: hasedPassword,
       role,
+      profile: {
+        create:{
+          profile_picture: "",
+          address:"",
+          phone_number:"",
+        }
+      },
     },
+    
   });
   const user = await prisma.user.findUnique({
     where: {
@@ -93,9 +101,28 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
 };
 
 
-
+const loggedInUserInfo = async (accessToken: string) => {
+  const varifyuser = jwt.verify(accessToken, config.jwt_access_secret)
+  if (!varifyuser) {
+    throw new AppError(httpstatus.UNAUTHORIZED, "Invalid access token");
+  }
+  const {id} = varifyuser as {id: string}; 
+  const user = await prisma.user.findUnique({
+    where:{
+     id,
+    },
+    include: {
+      profile: true,
+    },
+    omit: {
+      password: true, 
+    }
+  })
+  return user;
+};
 
 export const authService = {
   loginUserIntoDB,
   registerUserIntoDB,
+  loggedInUserInfo
 };

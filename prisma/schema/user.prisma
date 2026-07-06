@@ -1,21 +1,24 @@
 model user {
-    id String @id @default(uuid())
-    name String
-    email String @unique
-    password String
-    address String? @default("")
-    role Role @default(CUSTOMER)
+    id        String   @id @default(uuid())
+    name      String
+    email     String   @unique
+    password  String
+    role      Role     @default(CUSTOMER)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    status Status @default(ACTIVE)
+    status    Status   @default(ACTIVE)
+
+    profile profile?
 
     @@map("Users")
 }
+
 enum Status {
     ACTIVE
     INACTIVE
     SUSPENDED
 }
+
 enum Role {
     CUSTOMER
     PROVIDER

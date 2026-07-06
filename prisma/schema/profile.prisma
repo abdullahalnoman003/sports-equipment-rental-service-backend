@@ -1,0 +1,14 @@
+model profile {
+    id String @id @default(uuid())
+
+    profile_picture String? @default("")
+    address         String? @default("")
+    phone_number    String? @default("")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user_id   String   @unique
+    user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@map("Profiles")
+}
