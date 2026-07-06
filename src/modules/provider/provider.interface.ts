@@ -4,5 +4,6 @@ export interface IGearData {
     price: number;
     quantity: number;
     category_Name: string;
+    brand: string;
     provider_email: string;
 }

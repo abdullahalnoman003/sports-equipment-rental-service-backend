@@ -3,6 +3,7 @@ model gear {
     name           String
     description    String?
     image          String?
+    brand          String
     provider_email String
     price          Float
     quantity       Int

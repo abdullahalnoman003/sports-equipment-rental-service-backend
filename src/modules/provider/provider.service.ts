@@ -7,7 +7,7 @@ import httpStatus from "http-status";
 const createGearIntoDB = async (gearData: IGearData ) => {
 
     try {
-        const {name, description, price, quantity, category_Name, provider_email} = gearData;
+        const {name, description, price, quantity, category_Name, brand, provider_email} = gearData;
         
         const gear = await prisma.gear.create({
         data:{
@@ -15,16 +15,15 @@ const createGearIntoDB = async (gearData: IGearData ) => {
             description,
             price,
             quantity,
+            brand,
             category_Name,
             provider_email
         }
     })
     return gear;
     } catch (error) {
-        if (error instanceof AppError) {
-            throw error;
-        }
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to create gear");
+        
     }
     
     

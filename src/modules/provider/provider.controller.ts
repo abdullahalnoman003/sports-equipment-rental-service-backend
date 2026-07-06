@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 
 const createGear = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, quantity, category_name } = req.body;
+    const { name, description, price, quantity, brand, category_name } = req.body;
     const { email } = req.user!;
 
     if (typeof price !== "number" || typeof quantity !== "number" || quantity < 0){
@@ -14,10 +14,10 @@ const createGear = async (req: Request, res: Response) => {
             "Price and quantity must be non-negative numbers."
         )
     }
-    if (!name || !quantity || !price || !category_name || !quantity) {
+    if (!name || !quantity || !price || !category_name || !quantity || !brand) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
-        "Name, quantity, price and category name are required.",
+        "Name, quantity, price, brand, and category name are required.",
       );
     }
     const payload = {
@@ -25,6 +25,7 @@ const createGear = async (req: Request, res: Response) => {
       description,
       price,
       quantity,
+      brand, 
       category_Name: category_name,
       provider_email: email,
     };
