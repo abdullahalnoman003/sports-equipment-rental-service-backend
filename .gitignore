@@ -4,3 +4,4 @@ dist
 inst
 /generated/prisma
 requirements.md
+.vercel

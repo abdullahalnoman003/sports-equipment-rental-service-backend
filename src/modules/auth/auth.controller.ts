@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
-import { authService } from "./auth.service";
+import { authService } from "./auth.service.js";
 import httpstatus from "http-status";
-import { AppError } from "../../global/apperror";
+import { AppError } from "../../global/apperror.js";
 
 const registerUser = async (req: Request, res: Response) => {
   try {
     const payload = req.body;
+    if (!payload.name || !payload.email || !payload.password) {
+      throw new AppError(
+        httpstatus.BAD_REQUEST,
+        "Name, email and password are required.",
+      );
+    }
     const user = await authService.registerUserIntoDB(payload);
     res.status(httpstatus.CREATED).json({
       success: true,

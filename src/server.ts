@@ -1,9 +1,11 @@
-import app from "./app";
-import config from "./config";
-import { prisma } from "./lib/prisma";
+import app from "./app.js";
+import config from "./config/index.js";
+import { prisma } from "./lib/prisma.js";
 import "dotenv/config";
 
 const PORT = Number(config.port) ;
+
+export default app;
 
 async function main() {
     try {
@@ -18,4 +20,7 @@ async function main() {
         process.exit(1);
     }
 }
-main();
+
+if (!process.env.VERCEL) {
+    void main();
+}

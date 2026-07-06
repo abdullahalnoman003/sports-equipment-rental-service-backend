@@ -5,9 +5,9 @@
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-generated.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.ts"
+    "start": "node dist/src/server.js"
   },
   "repository": {
     "type": "git",

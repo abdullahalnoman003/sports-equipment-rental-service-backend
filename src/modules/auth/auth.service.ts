@@ -1,7 +1,7 @@
-import config from "../../config";
-import { AppError } from "../../global/apperror";
-import { prisma } from "../../lib/prisma";
-import { ILoginUser, IRegisterUser } from "./auth.interface";
+import config from "../../config/index.js";
+import { AppError } from "../../global/apperror.js";
+import { prisma } from "../../lib/prisma.js";
+import { ILoginUser, IRegisterUser } from "./auth.interface.js";
 import bcrypt from "bcryptjs";
 import httpstatus from "http-status";
 import jwt from "jsonwebtoken";
