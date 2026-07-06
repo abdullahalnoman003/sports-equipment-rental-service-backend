@@ -1,7 +1,7 @@
 import config from "../../config/index.js";
 import { AppError } from "../../global/apperror.js";
 import { prisma } from "../../lib/prisma.js";
-import { ILoginUser, IRegisterUser } from "./auth.interface.js";
+import { ILoginUser, IRegisterUser, UserInfo } from "./auth.interface.js";
 import bcrypt from "bcryptjs";
 import httpstatus from "http-status";
 import jwt from "jsonwebtoken";
@@ -101,15 +101,10 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
 };
 
 
-const loggedInUserInfo = async (accessToken: string) => {
-  const varifyuser = jwt.verify(accessToken, config.jwt_access_secret)
-  if (!varifyuser) {
-    throw new AppError(httpstatus.UNAUTHORIZED, "Invalid access token");
-  }
-  const {id} = varifyuser as {id: string}; 
-  const user = await prisma.user.findUnique({
+const loggedInUserInfo = async (id : string) => {
+  const userInfo = await prisma.user.findUnique({
     where:{
-     id,
+    id,
     },
     include: {
       profile: true,
@@ -118,7 +113,7 @@ const loggedInUserInfo = async (accessToken: string) => {
       password: true, 
     }
   })
-  return user;
+  return userInfo;
 };
 
 export const authService = {
