@@ -7,6 +7,9 @@ import { authRoute } from "./modules/auth/auth.route.js";
 import globalErrorHandler from './global/globalErrorhandler.js';
 import { providerRoute } from './modules/provider/provider.route.js';
 import { categoryRoute } from './modules/category/category.route.js';
+import { adminRoute } from './modules/admin/admin.route.js';
+import authMiddleware from './middleware/auth.middleware.js';
+import { Role } from '../generated/prisma/client.js';
 
 const app : Application = express();
 
@@ -26,6 +29,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/gear", gearRoute);
 app.use("/api/provider", providerRoute);
 app.use("/api/category", categoryRoute);
+app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
 
 
 

@@ -51,8 +51,12 @@ const createGear = async (req: Request, res: Response) => {
 
 const updateGearById = async () => {};
 const removeGearById = async () => {};
+const getAllOrders = async () => {};
+const updateOrderById = async () => {};
 export const providerController = {
   createGear,
   updateGearById,
   removeGearById,
+  getAllOrders,
+  updateOrderById,
 };
