@@ -3,7 +3,7 @@ import config from "./config";
 import { prisma } from "./lib/prisma";
 import "dotenv/config";
 
-const PORT = config.port ;
+const PORT = Number(config.port) ;
 
 async function main() {
     try {

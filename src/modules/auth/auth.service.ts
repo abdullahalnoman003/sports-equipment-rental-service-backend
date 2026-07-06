@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { ILoginUser, IRegisterUser } from "./auth.interface";
 import bcrypt from "bcryptjs";
 import httpstatus from "http-status";
+import jwt from "jsonwebtoken";
 
 const registerUserIntoDB = async (payload: IRegisterUser) => {
   const { name, email, password, role } = payload;
@@ -14,7 +15,7 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
   if (!roles.includes(role)) {
     throw new AppError(
       httpstatus.BAD_REQUEST,
-      "Invalid role. Only CUSTOMER and PROVIDER are allowed. If You are a Admin Please contact with the Admin to create your account."
+      "Invalid role. Only CUSTOMER and PROVIDER are allowed. If You are a Admin Please contact with the Admin to create your account.",
     );
   }
   const isUserExist = await prisma.user.findUnique({
@@ -49,7 +50,51 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
   });
   return user;
 };
-const loginUserIntoDB = async (payload: ILoginUser) => {};
+const loginUserIntoDB = async (payload: ILoginUser) => {
+
+  const { email, password } = payload;
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(httpstatus.NOT_FOUND, "User not found");
+  }
+  if (user.status === "SUSPENDED") {
+    throw new AppError(
+      httpstatus.FORBIDDEN,
+      "Your account has been suspended. Please contact support for assistance.",
+    );
+  }
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatched) {
+    throw new AppError(httpstatus.UNAUTHORIZED, "Invalid password");
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret, {
+    expiresIn: config.jwt_access_expires_in,
+  } as jwt.SignOptions);
+
+
+  const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret, {
+    expiresIn: config.jwt_refresh_expires_in,
+  } as jwt.SignOptions);
+
+
+  return { accessToken, refreshToken };
+};
+
+
+
+
 export const authService = {
   loginUserIntoDB,
   registerUserIntoDB,
