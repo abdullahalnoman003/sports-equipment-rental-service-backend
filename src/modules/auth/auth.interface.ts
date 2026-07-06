@@ -8,3 +8,9 @@ export interface IRegisterUser {
     password: string;
     role: "CUSTOMER" | "PROVIDER" ;
 }
+
+export interface UserInfo{
+    id: string;
+    email: string;
+    role: string;
+}

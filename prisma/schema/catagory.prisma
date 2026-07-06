@@ -1,0 +1,11 @@
+model category {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    image       String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    gears       gear[]
+
+    @@map("Categories")
+}

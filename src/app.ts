@@ -1,8 +1,12 @@
+import { gearRoute } from './modules/gear/gear.route.js';
 import cookieParser from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import config from "./config/index.js";
 import cors from "cors";
 import { authRoute } from "./modules/auth/auth.route.js";
+import globalErrorHandler from './global/globalErrorhandler.js';
+import { providerRoute } from './modules/provider/provider.route.js';
+import { categoryRoute } from './modules/category/category.route.js';
 
 const app : Application = express();
 
@@ -19,6 +23,13 @@ app.get("/", (req : Request, res: Response) => {
 
 // User routes
 app.use("/api/auth", authRoute);
+app.use("/api/gear", gearRoute);
+app.use("/api/provider", providerRoute);
+app.use("/api/category", categoryRoute);
 
+
+
+
+app.use(globalErrorHandler)
 
 export default app;
