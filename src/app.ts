@@ -14,6 +14,7 @@ import { rentalRoute } from './modules/rental/rental.route.js';
 import { reviewRoute } from './modules/review/review.route.js';
 import { paymentRoute } from './modules/payment/payment.route.js';
 import { paymentController } from './modules/payment/payment.controller.js';
+import { profileRoute } from './modules/profile/profile.route.js';
 
 const app : Application = express();
 
@@ -39,6 +40,7 @@ app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
 app.use("/api/rental", rentalRoute);
 app.use("/api/payment", paymentRoute);
 app.use("/api/review", reviewRoute);
+app.use("/api/profile", authMiddleware(Role.CUSTOMER, Role.PROVIDER, Role.ADMIN), profileRoute);
 
 
 
