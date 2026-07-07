@@ -16,7 +16,8 @@ const getAllUser = async (req: Request, res: Response) => {
     }
 }
 const updateUser= async (req: Request, res: Response) => {
-            const {user_id, status} = req.body;
+    const user_id  = req.params.id;
+            const { status} = req.body;
             if(!user_id || !status) {
             throw new AppError(httpStatus.BAD_REQUEST, "user_id and status are required");
         }
@@ -24,7 +25,7 @@ const updateUser= async (req: Request, res: Response) => {
             throw new AppError(httpStatus.BAD_REQUEST, "Invalid status value");
         }
     try {
-        const updatedUser = await adminService.updateUserByIdInDB(user_id, status);
+        const updatedUser = await adminService.updateUserByIdInDB(user_id as string, status);
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,
