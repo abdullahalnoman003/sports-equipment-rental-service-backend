@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 const createGear = async (req: Request, res: Response) => {
   try {
     const { name, description, price, quantity, brand, category_name } = req.body;
-    const { email } = req.user!;
+    const { id, email } = req.user!;
 
     if (typeof price !== "number" || typeof quantity !== "number" || quantity < 0){
         throw new AppError(
@@ -27,6 +27,7 @@ const createGear = async (req: Request, res: Response) => {
       quantity,
       brand, 
       category_Name: category_name,
+      provider_id: id,
       provider_email: email,
     };
 
