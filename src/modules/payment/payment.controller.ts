@@ -4,13 +4,14 @@ import httpStatus from "http-status";
 import { AppError } from "../../global/apperror";
 
 const createPaymentIntent = async (req: Request, res: Response) => {
-    
     const userId = req.user!.id;
     const rentalId = req.body.rentalId;
 
     try {
-        
-        const result = await paymentService.createPaymentIntoDB(userId as string, rentalId as string);
+        const result = await paymentService.createPaymentIntoDB(
+            userId as string,
+            rentalId as string,
+        );
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,
@@ -18,37 +19,39 @@ const createPaymentIntent = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: "Failed to create payment intent",
-            data: {error: "Unknown error Or Duplicate payment"},
-        });
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 };
 const confirmPayment = async (req: Request, res: Response) => {
-
     try {
-        const event = req.body  as Buffer;
-    const signature = req.headers["stripe-signature"]!;
-    await paymentService.confirmPaymentIntoDB(event, signature as string);
-    res.status(httpStatus.OK).json({
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "Checkout successful",
-        data: null,
-    });
-    } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: "Failed to create payment intent",
-            data: {},
+        const event = req.body as Buffer;
+        const signature = req.headers["stripe-signature"]!;
+        await paymentService.confirmPaymentIntoDB(event, signature as string);
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Checkout successful",
+            data: null,
         });
+    } catch (error) {
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
+};
 
-    
-}
 const getAllPayments = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     try {
@@ -60,21 +63,25 @@ const getAllPayments = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: "Failed to retrieve payments",
-            data: {},
-        });
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
-
-}
+};
 const getPaymentById = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const paymentId = req.params.id;
 
     try {
-        const result = await paymentService.getPaymentByIdFromDB(userId as string, paymentId as string);
+        const result = await paymentService.getPaymentByIdFromDB(
+            userId as string,
+            paymentId as string,
+        );
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,
@@ -82,18 +89,20 @@ const getPaymentById = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: "Failed to retrieve payment",
-            data: {},
-        });
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
-}
+};
 
 export const paymentController = {
-  createPaymentIntent,
-  confirmPayment,
-  getAllPayments,
-  getPaymentById,
+    createPaymentIntent,
+    confirmPayment,
+    getAllPayments,
+    getPaymentById,
 };

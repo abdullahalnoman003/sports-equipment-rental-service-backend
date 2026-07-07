@@ -39,14 +39,14 @@ const registerUserIntoDB = async (payload: IRegisterUser) => {
       password: hasedPassword,
       role,
       profile: {
-        create:{
+        create: {
           profile_picture: "",
-          address:"",
-          phone_number:"",
+          address: "",
+          phone_number: "",
         }
       },
     },
-    
+
   });
   const user = await prisma.user.findUnique({
     where: {
@@ -101,16 +101,16 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
 };
 
 
-const loggedInUserInfo = async (id : string) => {
+const loggedInUserInfo = async (id: string) => {
   const userInfo = await prisma.user.findUnique({
-    where:{
-    id,
+    where: {
+      id,
     },
     include: {
       profile: true,
     },
     omit: {
-      password: true, 
+      password: true,
     }
   })
   return userInfo;
