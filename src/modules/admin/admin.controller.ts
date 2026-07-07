@@ -12,7 +12,14 @@ const getAllUser = async (req: Request, res: Response) => {
         data: users,
     });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch users");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 const updateUser= async (req: Request, res: Response) => {
@@ -33,7 +40,14 @@ const updateUser= async (req: Request, res: Response) => {
             data: updatedUser,
         });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update user");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 
@@ -47,7 +61,14 @@ const getAllGear = async (req: Request, res: Response) => {
             data: gear,
         });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch gear");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 const getAllRentalOrders = async (req: Request, res: Response) => {
@@ -60,7 +81,14 @@ const getAllRentalOrders = async (req: Request, res: Response) => {
             data: rentalOrders,
         });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch rental orders");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 
