@@ -28,7 +28,7 @@ app.get("/", (req : Request, res: Response) => {
 // User routes
 app.use("/api/auth", authRoute);
 app.use("/api/gear", gearRoute);
-app.use("/api/provider", providerRoute);
+app.use("/api/provider", authMiddleware(Role.PROVIDER), providerRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
 app.use("/api/rental", rentalRoute);

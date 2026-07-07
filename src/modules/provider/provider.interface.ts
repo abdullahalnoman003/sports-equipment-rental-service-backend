@@ -8,3 +8,13 @@ export interface IGearData {
     provider_id: string;
     provider_email: string;
 }
+
+export interface IUpdateGearData {
+    name?: string;
+    description?: string;
+    price?: number;
+    image?: string;
+    quantity?: number;
+    category_Name?: string;
+    brand?: string;
+}
