@@ -9,6 +9,8 @@ model payment {
     paid_at DateTime?
     created_at DateTime @default(now())
 
+    customerId String
+    
     @@map("Payments")
 }
 enum PaymentProvider{
