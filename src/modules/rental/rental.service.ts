@@ -63,14 +63,23 @@ const rental = await prisma.$transaction(async (tx) => {
 return rental;
 };
 
-const getAllRentalsFromDB = async () => {
-    const rentals = await prisma.rental.findMany({include:{user: true, gear: true}});
+const getAllRentalsFromDB = async (userId: string) => {
+    const rentals = await prisma.rental.findMany({
+        where: {
+            user_id: userId
+        },
+        include: {
+            user: true,
+            gear: true
+        }
+    });
+    
     return rentals
 }
 
-const getRentalByIdFromDB = async (id: string) => {
+const getRentalByIdFromDB = async (rentalId: string, id: string) => {
     const rental = await prisma.rental.findUniqueOrThrow({
-        where: {id},
+        where: {id: rentalId},
         include: {user: {
             omit : {
                 password: true,
@@ -81,6 +90,9 @@ const getRentalByIdFromDB = async (id: string) => {
         },
             gear: true}
     });
+    if(rental.user_id !== id){
+        throw new AppError(403, "You are not authorized to view this rental");
+    }
     return rental;
 }
 export const rentalService = {

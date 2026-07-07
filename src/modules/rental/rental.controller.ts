@@ -29,7 +29,8 @@ const createRental = async (req: Request, res: Response)=>{
 
 const getRentals = async (req: Request, res: Response)=>{
     try {
-        const allRentals = await rentalService.getAllRentalsFromDB();
+        const userId = req.user!.id;
+        const allRentals = await rentalService.getAllRentalsFromDB(userId);
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,
@@ -49,8 +50,10 @@ const getRentals = async (req: Request, res: Response)=>{
 }
 
 const getRentalsById = async (req: Request, res: Response)=>{
+    const rentalId = req.params.id;
+    const userId = req.user!.id;
     try {
-        const rental = await rentalService.getRentalByIdFromDB(req.params.id as string);
+        const rental = await rentalService.getRentalByIdFromDB(rentalId as string, userId);
         res.status(httpStatus.OK).json({
             success: true,
             statusCode: httpStatus.OK,
