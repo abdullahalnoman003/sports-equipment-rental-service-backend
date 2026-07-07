@@ -73,12 +73,15 @@ const getAllRentalsFromDB = async (userId: string) => {
             gear: true
         }
     });
+    if (rentals.length === 0) {
+        throw new AppError(404, "No rentals found");
+    }
     
     return rentals
 }
 
 const getRentalByIdFromDB = async (rentalId: string, id: string) => {
-    const rental = await prisma.rental.findUniqueOrThrow({
+    const rental = await prisma.rental.findUnique({
         where: {id: rentalId},
         include: {user: {
             omit : {
@@ -90,6 +93,11 @@ const getRentalByIdFromDB = async (rentalId: string, id: string) => {
         },
             gear: true}
     });
+
+    if(!rental){
+        throw new AppError(404, "Rental not found");
+    }
+
     if(rental.user_id !== id){
         throw new AppError(403, "You are not authorized to view this rental");
     }
