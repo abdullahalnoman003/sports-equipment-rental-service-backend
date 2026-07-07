@@ -30,7 +30,18 @@ const getAllGear = async (req: Request, res: Response) => {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch gear");
     }
 }
-const getAllRentalOrders = async () => {
+const getAllRentalOrders = async (req: Request, res: Response) => {
+    try {
+        const rentalOrders = await adminService.getAllRentalOrdersFromDB();
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Rental orders fetched successfully",
+            data: rentalOrders,
+        });
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch rental orders");
+    }
 }
 
 export const adminController = {

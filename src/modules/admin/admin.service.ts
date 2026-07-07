@@ -17,6 +17,18 @@ const getAllGearFromDB = async () => {
     return gear;
 }
 const getAllRentalOrdersFromDB = async () => {
+    const rentalOrders = await prisma.rental.findMany({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    email: true,
+                }
+            },
+            gear: true
+        }
+    });
+    return rentalOrders;
 }
 
 export const adminService = {
