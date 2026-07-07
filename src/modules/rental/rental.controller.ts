@@ -36,7 +36,6 @@ const getRentals = async (req: Request, res: Response)=>{
 const getRentalsById = async (req: Request, res: Response)=>{
     try {
         const rental = await rentalService.getRentalByIdFromDB(req.params.id as string);
-        console.log(rental)
         res.status(httpStatus.OK).json({
             status: "success",
             message: "Rental fetched successfully",

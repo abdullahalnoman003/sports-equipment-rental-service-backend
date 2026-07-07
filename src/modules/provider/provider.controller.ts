@@ -4,10 +4,8 @@ import { providerService } from "./provider.service.js";
 import httpStatus from "http-status";
 
 const createGear = async (req: Request, res: Response) => {
-  try {
     const { name, description, price, quantity, brand, category_name } = req.body;
     const { id, email } = req.user!;
-
     if (typeof price !== "number" || typeof quantity !== "number" || quantity < 0){
         throw new AppError(
             httpStatus.BAD_REQUEST,
@@ -30,7 +28,7 @@ const createGear = async (req: Request, res: Response) => {
       provider_id: id,
       provider_email: email,
     };
-
+  try {
     const gear = await providerService.createGearIntoDB(payload);
     res.status(httpStatus.CREATED).json({
       success: true,
