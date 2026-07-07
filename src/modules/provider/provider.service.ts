@@ -8,6 +8,7 @@ const createGearIntoDB = async (gearData: IGearData) => {
     const {
     name,
     description,
+    image,
     price,
     quantity,
     category_Name,
@@ -20,6 +21,7 @@ const createGearIntoDB = async (gearData: IGearData) => {
     data: {
         name,
         description,
+        image: image || null,
         price,
         quantity,
         brand,
@@ -62,8 +64,28 @@ const UpdateGearByIdInDB = async (user_id:string, gearId : string , payload : IU
   return updatedGear;
 }
 
-const RemoveGearByIdInDB = async () => {
-  // Implementation for removing gear by ID
+const RemoveGearByIdInDB = async (user_id:string, gearId : string) => {
+  const gear = await prisma.gear.findUnique({
+    where: {
+      id: gearId,
+    },
+  });
+  if (!gear) {
+    throw new AppError(httpStatus.NOT_FOUND,"Gear not found",);
+  }
+  if (gear.provider_id !== user_id) {
+    throw new AppError(httpStatus.FORBIDDEN,"You are not the owner of this gear",
+    );
+  }
+  
+  const removedGear = await prisma.$transaction(async (tx)=>{
+    await tx.gear.delete({
+      where:{
+        id:gearId
+      }
+    })
+  })
+  return removedGear;
 }
 
 const GetAllOrdersFromDB = async () => {

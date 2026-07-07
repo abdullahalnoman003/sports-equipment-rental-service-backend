@@ -3,16 +3,16 @@ import { prisma } from "../../lib/prisma";
 import { IRentalData } from "./rental.interface";
 
 const createNewRentalIntoDB = async (payload: IRentalData) => {
-  const { user_id, gear_id, start_date, end_date } = payload;
-  const itemFound = await prisma.gear.findUnique({
+const { user_id, gear_id, start_date, end_date } = payload;
+const itemFound = await prisma.gear.findUnique({
     where: {
-      id: gear_id,
+    id: gear_id,
     },
-  });
+});
 
-  if (!itemFound) {
+    if (!itemFound) {
     throw new AppError(404, "Gear item not found");
-  }
+    }
 
   if (itemFound.quantity < 1) {
     throw new AppError(400, "Gear item not available");
@@ -25,42 +25,42 @@ const createNewRentalIntoDB = async (payload: IRentalData) => {
     throw new AppError(400, "End date must be after start date");
   }
 
-  const rental = await prisma.$transaction(async (tx) => {
+const rental = await prisma.$transaction(async (tx) => {
     const createdRental = await tx.rental.create({
-      data: {
+    data: {
         user_id,
         gear_id,
         start_date,
         end_date,
         total_price: rentalDays * itemFound.price,
-      },
-      include: {
+    },
+    include: {
         gear: true,
         user: {
-          select: {
+        select: {
             id: true,
             name: true,
             email: true,
-          },
         },
-      },
+        },
+    },
     });
 
     await tx.gear.update({
-      where: {
+    where: {
         id: gear_id,
-      },
-      data: {
+    },
+    data: {
         quantity: {
-          decrement: 1,
+        decrement: 1,
         },
-      },
+    },
     });
 
     return createdRental;
-  });
+});
 
-  return rental;
+return rental;
 };
 
 const getAllRentalsFromDB = async () => {

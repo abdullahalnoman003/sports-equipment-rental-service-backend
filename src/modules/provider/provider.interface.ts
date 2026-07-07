@@ -1,6 +1,7 @@
 export interface IGearData {
     name: string;
     description: string;
+    image?: string
     price: number;
     quantity: number;
     category_Name: string;
