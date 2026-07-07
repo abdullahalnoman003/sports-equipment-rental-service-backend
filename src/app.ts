@@ -11,6 +11,7 @@ import { adminRoute } from './modules/admin/admin.route.js';
 import authMiddleware from './middleware/auth.middleware.js';
 import { Role } from '../generated/prisma/client.js';
 import { rentalRoute } from './modules/rental/rental.route.js';
+import { reviewRoute } from './modules/review/review.route.js';
 
 const app : Application = express();
 
@@ -33,6 +34,7 @@ app.use("/api/category", categoryRoute);
 app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
 app.use("/api/rental", rentalRoute);
 
+app.use("/api/review", reviewRoute);
 
 
 

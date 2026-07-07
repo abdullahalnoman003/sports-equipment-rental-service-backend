@@ -10,13 +10,20 @@ const createRental = async (req: Request, res: Response)=>{
         const payload = {user_id : id, email, role, gear_id, start_date : new Date(start_date), end_date : new Date(end_date)}
         const rental = await rentalService.createNewRentalIntoDB(payload)
         res.status(httpStatus.CREATED).json({
-            status: "success",
+            success: true,
+            statusCode: httpStatus.CREATED,
             message: "Rental created successfully",
             data: rental,
         });
     } catch (error) {
-        console.error("Error creating rental:", error);
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to create rental...");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 
@@ -24,12 +31,20 @@ const getRentals = async (req: Request, res: Response)=>{
     try {
         const allRentals = await rentalService.getAllRentalsFromDB();
         res.status(httpStatus.OK).json({
-            status: "success",
+            success: true,
+            statusCode: httpStatus.OK,
             message: "Rentals fetched successfully",
             data: allRentals,
         });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch rentals...");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 
@@ -37,12 +52,20 @@ const getRentalsById = async (req: Request, res: Response)=>{
     try {
         const rental = await rentalService.getRentalByIdFromDB(req.params.id as string);
         res.status(httpStatus.OK).json({
-            status: "success",
+            success: true,
+            statusCode: httpStatus.OK,
             message: "Rental fetched successfully",
             data: rental,
         });
     } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch rental...");
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: {},
+            });
+        }
     }
 }
 

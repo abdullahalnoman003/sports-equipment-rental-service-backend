@@ -18,7 +18,6 @@ const getAllGearsFromDB = async (query : any) => {
             where.price.lte = Number(query.maximumPrice);
         }
     }
-    console.log(where);
     return await prisma.gear.findMany({ where });
 
     // const gear = await prisma.gear.findMany(
