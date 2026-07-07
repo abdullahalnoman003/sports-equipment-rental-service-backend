@@ -12,8 +12,12 @@ import authMiddleware from './middleware/auth.middleware.js';
 import { Role } from '../generated/prisma/client.js';
 import { rentalRoute } from './modules/rental/rental.route.js';
 import { reviewRoute } from './modules/review/review.route.js';
+import { paymentRoute } from './modules/payment/payment.route.js';
+import { paymentController } from './modules/payment/payment.controller.js';
 
 const app : Application = express();
+
+app.post("/api/payment/confirm", express.raw({ type: "application/json" }), paymentController.confirmPayment);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,7 +37,7 @@ app.use("/api/provider", authMiddleware(Role.PROVIDER), providerRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
 app.use("/api/rental", rentalRoute);
-
+app.use("/api/payment", paymentRoute);
 app.use("/api/review", reviewRoute);
 
 
