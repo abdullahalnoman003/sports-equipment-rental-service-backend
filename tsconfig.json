@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    // "rootDir": "./src",
+    "rootDir": "./src",
     "outDir": "./dist",
-    "module": "ESNext",
-    "target": "ES2023",
+    "module": "esnext",
+    "target": "esnext",
     "moduleResolution": "bundler",
     "types": ["node"],
     // and npm install -D @types/node
@@ -23,6 +23,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true, 
   },
-  // "include": ["src/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

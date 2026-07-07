@@ -9,6 +9,9 @@ model user {
     status    Status   @default(ACTIVE)
 
     profile profile?
+    rentals  rental[]
+    gears   gear[]
+    reviews review[]
 
     @@map("Users")
 }

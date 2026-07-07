@@ -1,0 +1,25 @@
+model rental {
+    id         String   @id @default(uuid())
+    user_id    String
+    user user @relation(fields: [user_id], references: [id])
+    gear_id    String
+    gear     gear     @relation(fields: [gear_id], references: [id])
+    start_date DateTime
+    end_date   DateTime
+    status     RentalStatus @default(PLACED)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    total_price Float
+    payment payment?
+
+    @@map("Rentals")
+}
+
+enum RentalStatus {
+    PAID
+    PLACED
+    CONFIRMED
+    CANCELED
+    PICKED_UP
+    RETURNED
+}

@@ -5,9 +5,9 @@
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && node scripts/copy-generated.mjs",
+    "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/src/server.js"
+    "start": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",
     "prisma": "^7.8.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   },

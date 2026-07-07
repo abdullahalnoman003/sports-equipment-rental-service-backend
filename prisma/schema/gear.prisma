@@ -11,6 +11,10 @@ model gear {
     updatedAt      DateTime @updatedAt
     category_Name  String   
     category       category @relation(fields: [category_Name], references: [name])
+    rentals        rental[]
+    reviews        review[]
+    provider_id    String
+    provider        user     @relation(fields: [provider_id], references: [id])
 
     @@map("Gears")
 }
