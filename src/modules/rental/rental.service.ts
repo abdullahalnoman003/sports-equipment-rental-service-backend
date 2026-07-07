@@ -62,6 +62,29 @@ const createNewRentalIntoDB = async (payload: IRentalData) => {
 
   return rental;
 };
+
+const getAllRentalsFromDB = async () => {
+    const rentals = await prisma.rental.findMany({include:{user: true, gear: true}});
+    return rentals
+}
+
+const getRentalByIdFromDB = async (id: string) => {
+    const rental = await prisma.rental.findUniqueOrThrow({
+        where: {id},
+        include: {user: {
+            omit : {
+                password: true,
+                role: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        },
+            gear: true}
+    });
+    return rental;
+}
 export const rentalService = {
-  createNewRentalIntoDB,
+    createNewRentalIntoDB,
+    getAllRentalsFromDB,
+    getRentalByIdFromDB 
 };

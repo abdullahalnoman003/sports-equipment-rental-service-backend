@@ -31,7 +31,7 @@ app.use("/api/gear", gearRoute);
 app.use("/api/provider", providerRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/admin", authMiddleware(Role.ADMIN), adminRoute);
-app.use("/api/rental", authMiddleware(Role.CUSTOMER), rentalRoute);
+app.use("/api/rental", rentalRoute);
 
 
 

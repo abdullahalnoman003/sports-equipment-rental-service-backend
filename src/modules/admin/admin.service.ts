@@ -1,7 +1,13 @@
 import { prisma } from "../../lib/prisma.js";
 
 const getAllUserFromDB = async () => {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+        omit: {
+            password: true,
+            updatedAt: true,
+        }, 
+    }
+    );
     return users;
 }
 const updateUserByIdInDB = async () => {}
