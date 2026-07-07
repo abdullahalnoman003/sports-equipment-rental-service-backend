@@ -141,8 +141,56 @@ const removeGearById = async (req: Request, res: Response) => {
   }
 
 };
-const getAllOrders = async (req: Request, res: Response) => {};
-const updateOrderById = async (req: Request, res: Response) => {};
+const getAllOrders = async (req: Request, res: Response) => {
+  const providerId = req.user!.id;
+  try {
+    const allOrders = await providerService.GetAllOrdersFromDB(providerId as string);
+    res.status(httpStatus.OK).json({
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "All orders fetched successfully",
+      data: allOrders,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        statusCode: error.statusCode,
+        message: error.message,
+        data: {},
+      });
+    }
+  }
+};
+const updateOrderById = async (req: Request, res: Response) => {
+  const orderId = req.params.id;
+  const { status } = req.body;
+  const providerId = req.user!.id;
+  if (!status) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Status is required");
+  }
+  if (!["PAID", "PLACED", "CONFIRMED", "CANCELED", "PICKED_UP", "RETURNED"].includes(status)) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid status value");
+  }
+  try {
+    const updatedOrder = await providerService.UpdateOrderByIdInDB(providerId as string,orderId as string, status);
+    res.status(httpStatus.OK).json({
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Order updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        statusCode: error.statusCode,
+        message: error.message,
+        data: {},
+      });
+    }
+  }
+};
 export const providerController = {
   getAllGear,
   createGear,

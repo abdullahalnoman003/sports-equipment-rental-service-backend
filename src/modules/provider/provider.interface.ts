@@ -19,3 +19,4 @@ export interface IUpdateGearData {
     category_Name?: string;
     brand?: string;
 }
+

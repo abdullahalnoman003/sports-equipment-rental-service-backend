@@ -1,3 +1,4 @@
+import { RentalStatus } from "../../../generated/prisma/index.js";
 import { AppError } from "../../global/apperror.js";
 import { prisma } from "../../lib/prisma.js";
 import { IGearData, IUpdateGearData } from "./provider.interface.js";
@@ -88,11 +89,60 @@ const RemoveGearByIdInDB = async (user_id:string, gearId : string) => {
   return removedGear;
 }
 
-const GetAllOrdersFromDB = async () => {
-  // Implementation for getting all orders
+const GetAllOrdersFromDB = async (providerId: string) => {
+
+  const orders = await prisma.rental.findMany({
+    where: {
+      gear: {
+        provider_id: providerId,
+      },
+    },
+    include: {
+      gear: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      payment: true,
+    },
+  })
+  if ( orders.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, "No orders found for this provider");
+  }
+  return orders;
 }
 
-const UpdateOrderByIdInDB = async () => {
+const UpdateOrderByIdInDB = async (providerId: string, orderId: string, status: | "PAID"| "PLACED"| "CONFIRMED"| "CANCELED"| "PICKED_UP"| "RETURNED") => {
+  
+  const order = await prisma.rental.findUnique({
+    where: {
+      id: orderId,
+    },
+    include: {
+      gear: true,
+    },
+  });
+
+  if(order?.gear.provider_id !== providerId){
+    throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to update this order");
+  }
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, "Order not found");
+  }
+  const updatedOrder = await prisma.rental.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status,
+    },
+  });
+  if (!updatedOrder) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update order");
+  }
+  return updatedOrder;
   
 }
 
