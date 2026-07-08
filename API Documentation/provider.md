@@ -2,7 +2,7 @@
 *(All provider endpoints require Provider Auth)*
 
 ## 1. Add Gear
-- **Endpoint:** `POST /api/provider/gear`
+- **Endpoint:** `POST /api/provider/getallgear`
 - **Description:** Add a new gear item to the provider's inventory.
 - **Request Body:**
   ```json

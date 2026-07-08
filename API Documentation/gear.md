@@ -1,7 +1,7 @@
 # Gear API (`/api/gear`)
 
 ## 1. Get All Gear
-- **Endpoint:** `GET /api/gear/getallgear`
+- **Endpoint:** `GET /api/gear/gear`
 - **Description:** Fetch all available gear. Supports filtering by category, price, and brand.
 - **Request Body:** None
 - **Success Response:**

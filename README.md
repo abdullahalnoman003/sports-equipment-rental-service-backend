@@ -65,7 +65,7 @@ See `.env.example` for a complete list of required environment variables.
 - **`GET /api/auth/me`**: Fetch the currently authenticated user's profile information. (Requires Auth)
 
 ### Gear (`/api/gear`)
-- **`GET /api/gear/getallgear`**: Fetch all available gear. Supports filtering by category, price, and brand.
+- **`GET /api/gear/gear`**: Fetch all available gear. Supports filtering by category, price, and brand.
 - **`GET /api/gear/:id`**: Fetch detailed information about a specific gear item.
 
 ### Categories (`/api/category`)
