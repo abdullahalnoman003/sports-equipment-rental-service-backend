@@ -17,6 +17,15 @@ const reviewIntoDB = async (userId: string, rating: number, comment: string, ren
     if(rentalCheck?.status !== "RETURNED") {
         throw new AppError(400, "You can only review a rental after it has been returned");
     }
+    const existingReview = await prisma.review.findFirst({
+        where:{
+            user_id: userId,
+            gear_id: rentalCheck.gear_id
+        }
+    })
+    if(existingReview) {
+        throw new AppError(400, "You have already reviewed this gear");
+    }
     const review = await prisma.review.create({
         data:{
             user_id: userId,
