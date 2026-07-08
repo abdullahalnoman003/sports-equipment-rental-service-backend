@@ -44,8 +44,60 @@ const createCategory = async (req: Request, res: Response) => {
     }
 }
 
+const updateCategory = async (req: Request, res: Response) => {
+  const id  = req.params.id;
+  const { name, description, image } = req.body;
+  if (!name) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Name is required or cannot be empty");
+  }
+  try {
+    const category = await categoryService.updateCategoryInDB(id as string, name, description, image);
+    res.status(httpStatus.OK).json({
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Category updated successfully",
+      data: category,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        statusCode: error.statusCode,
+        message: error.message,
+        data: {},
+      });
+    }
+  }
+}
 
+
+const deleteCategory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Category ID is required");
+  }
+  try {
+    const deleted = await categoryService.deleteCategoryFromDB(id as string);
+    res.status(httpStatus.OK).json({
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Category deleted successfully",
+      data: deleted,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        statusCode: error.statusCode,
+        message: error.message,
+        data: {},
+      });
+    }
+  }
+}
 export const categoryController = {
   getAllCategory,
-  createCategory
+  createCategory,
+  deleteCategory,
+  updateCategory
 };

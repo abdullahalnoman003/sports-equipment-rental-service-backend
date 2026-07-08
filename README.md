@@ -71,6 +71,8 @@ See `.env.example` for a complete list of required environment variables.
 ### Categories (`/api/category`)
 - **`GET /api/category`**: Fetch all gear categories available on the platform.
 - **`POST /api/category/create-category`**: Create a new gear category. (Requires Admin Auth)
+- **`DELETE /api/category/delete-category/:id`**: Delete an existing gear category. (Requires Admin Auth)
+- **`PUT /api/category/update-category/:id`**: Update details of a specific gear category when no gears exist in it. (Requires Admin Auth)
 
 ### Profile (`/api/profile`)
 - **`PUT /api/profile/update-profile`**: Update the authenticated user's profile information. (Requires Auth)
