@@ -1,3 +1,4 @@
+import { AppError } from "../../global/apperror.js";
 import { prisma } from "../../lib/prisma.js";
 
 const getAllUserFromDB = async () => {
@@ -16,6 +17,15 @@ const getAllUserFromDB = async () => {
     return users;
 }
 const updateUserByIdInDB = async (user_id: string, status: "ACTIVE" | "SUSPENDED" | "INACTIVE" ) => {
+    
+    const existingUser = await prisma.user.findUnique({
+        where: {
+            id: user_id,
+        },
+    });
+    if (!existingUser) {
+        throw new AppError(404, "User not found");
+    }
     const updatedUser = await prisma.user.update({
         where: {
             id: user_id,
@@ -28,11 +38,7 @@ const updateUserByIdInDB = async (user_id: string, status: "ACTIVE" | "SUSPENDED
             updatedAt: true,
         }, 
     });
-        if (updatedUser) {
-            return updatedUser;
-        } else {
-            throw new Error("User not found");
-        }
+    return updatedUser;
     }
 
 const getAllGearFromDB = async () => {

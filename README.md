@@ -27,7 +27,7 @@ This repository contains the backend code for GearUp, a sports and outdoor equip
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd "Assignment 4"
+   cd "folder-name"
    ```
 
 2. **Install dependencies:**
@@ -65,7 +65,7 @@ See `.env.example` for a complete list of required environment variables.
 - **`GET /api/auth/me`**: Fetch the currently authenticated user's profile information. (Requires Auth)
 
 ### Gear (`/api/gear`)
-- **`GET /api/gear`**: Fetch all available gear. Supports filtering by category, price, and brand.
+- **`GET /api/gear/getallgear`**: Fetch all available gear. Supports filtering by category, price, and brand.
 - **`GET /api/gear/:id`**: Fetch detailed information about a specific gear item.
 
 ### Categories (`/api/category`)
@@ -98,7 +98,7 @@ See `.env.example` for a complete list of required environment variables.
 - **`PATCH /api/provider/orders/:id`**: Update the status of a rental order (e.g., CONFIRMED, PICKED_UP, RETURNED).
 
 ### Reviews (`/api/review`)
-- **`POST /api/review`**: Submit a review and rating for a rented gear item after returning it. (Requires Customer Auth)
+- **`POST /api/review`**: Submit a single review and rating for a rented gear item after returning it. (Requires Customer Auth)
 
 ### Admin Management (`/api/admin`)
 *(All admin endpoints require Admin Auth)*
