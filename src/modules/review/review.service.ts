@@ -19,17 +19,17 @@ const reviewIntoDB = async (userId: string, rating: number, comment: string, ren
     }
     const existingReview = await prisma.review.findFirst({
         where:{
-            user_id: userId,
-            gear_id: rentalCheck.gear_id
+            rental_id: rentalId
         }
     })
     if(existingReview) {
-        throw new AppError(400, "You have already reviewed this gear");
+        throw new AppError(400, "You have already reviewed this rental");
     }
     const review = await prisma.review.create({
         data:{
             user_id: userId,
             gear_id: rentalCheck.gear_id,
+            rental_id: rentalId,
             rating,
             comment
         },

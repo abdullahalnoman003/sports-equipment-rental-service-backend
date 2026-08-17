@@ -74,6 +74,10 @@ const createPaymentIntoDB = async (userId: string, rentalId: string) => {
             }
         })
 
+        if (!session.url) {
+            throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to create Stripe checkout session.");
+        }
+
         return session.url;
 
     });

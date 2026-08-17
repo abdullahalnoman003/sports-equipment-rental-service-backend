@@ -11,6 +11,7 @@ model rental {
     updated_at DateTime @updatedAt
     total_price Float
     payment payment?
+    reviews review[]
 
     @@map("Rentals")
 }

@@ -4,6 +4,8 @@ model review {
     user       user     @relation(fields: [user_id], references: [id])
     gear_id    String
     gear       gear     @relation(fields: [gear_id], references: [id])
+    rental_id  String?  @unique
+    rental     rental?  @relation(fields: [rental_id], references: [id], onDelete: Cascade)
     rating     Int
     comment    String?
     created_at DateTime @default(now())
