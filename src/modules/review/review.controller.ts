@@ -39,6 +39,51 @@ const review = async (req: Request, res: Response) => {
 
 };
 
+const getReviewsByGear = async (req: Request, res: Response) => {
+    try {
+        const gearId = String(req.query.gear_id ?? "");
+        const reviews = await reviewService.getReviewsByGear(gearId);
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Reviews fetched successfully",
+            data: reviews,
+        });
+    } catch (error) {
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: [],
+            });
+        }
+    }
+};
+
+const getRatingSummary = async (req: Request, res: Response) => {
+    try {
+        const summary = await reviewService.getRatingSummary();
+        res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Rating summary fetched successfully",
+            data: summary,
+        });
+    } catch (error) {
+        if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+                success: false,
+                statusCode: error.statusCode,
+                message: error.message,
+                data: [],
+            });
+        }
+    }
+};
+
 export const reviewController = {
     review,
+    getReviewsByGear,
+    getRatingSummary,
 };
