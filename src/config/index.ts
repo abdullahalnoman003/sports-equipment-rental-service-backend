@@ -17,5 +17,6 @@ export default {
     stripe_secret_key : process.env.STRIPE_SECRET_KEY!,
     stripe_webhook_secret : process.env.STRIPE_WEBHOOK_SECRET!,
     client_url : process.env.CLIENT_URL!,
-    cancel_url : process.env.CANCEL_URL!
+    cancel_url : process.env.CANCEL_URL!,
+    google_client_id : process.env.GOOGLE_CLIENT_ID,
 }
