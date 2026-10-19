@@ -7,3 +7,4 @@ requirements.md
 .vercel
 
 AGENTS.md
+.env*.local
