@@ -56,7 +56,7 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 
 | Area | Highlights |
 |---|---|
-| **🔐 Authentication** | JWT-based auth with httpOnly cookie tokens, role-based access control (Customer / Provider / Admin) |
+| **🔐 Authentication** | JWT-based auth with httpOnly cookie tokens, Google sign-in, role-based access control (Customer / Provider / Admin) |
 | **🏕️ Gear Catalog** | Browse, search, and filter gear by category, price, and brand |
 | **📦 Rental Management** | Full rental lifecycle — place, confirm, pick up, return, cancel |
 | **💳 Stripe Payments** | Secure checkout sessions with webhook-based payment confirmation |
@@ -77,7 +77,7 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 | **Language** | TypeScript 6 (ESM, strict mode) |
 | **ORM** | Prisma 7 with `@prisma/adapter-pg` |
 | **Database** | PostgreSQL |
-| **Authentication** | JSON Web Tokens (JWT) with httpOnly cookies |
+| **Authentication** | JSON Web Tokens (JWT) with httpOnly cookies, Google Sign-In (`google-auth-library`) |
 | **Payments** | Stripe Checkout |
 | **Build Tool** | tsup (ESM bundle) |
 | **Dev Runner** | tsx (watch mode) |
@@ -93,7 +93,7 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 │   ├── migrations/             # Database migration history
 │   └── schema/                 # Multi-file Prisma schema
 │       ├── schema.prisma       # Generator & datasource config
-│       ├── user.prisma          # User, Role, Status models
+│       ├── user.prisma          # User, Role, Status, AuthProvider models
 │       ├── gear.prisma          # Gear listings model
 │       ├── catagory.prisma      # Category model
 │       ├── rental.prisma        # Rental orders & RentalStatus enum
@@ -102,6 +102,7 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 │       └── profile.prisma       # User profiles
 ├── scripts/
 │   ├── seed.ts                 # Database seed script
+│   ├── categoryseed.ts         # Standalone helper to seed categories
 │   ├── data.ts                 # Seed catalog data
 │   └── gear-images.json        # 100 real image URLs for seeded gear
 ├── src/
@@ -115,10 +116,10 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 │   ├── middleware/
 │   │   └── auth.middleware.ts  # JWT verification & role-based guard
 │   ├── global/
-│   │   ├── AppError.ts         # Custom error class
+│   │   ├── apperror.ts            # Custom error class
 │   │   └── globalErrorhandler.ts  # Centralized error handler
 │   └── modules/
-│       ├── auth/               # Register, login, get current user
+│       ├── auth/               # Register, login, Google sign-in, get current user
 │       ├── gear/               # Public gear browsing & filtering
 │       ├── category/           # CRUD categories (admin-write, public-read)
 │       ├── provider/           # Provider gear & order management
@@ -130,6 +131,8 @@ Browse Gear → Place Rental → Pay via Stripe → Provider Confirms → Custom
 ├── generated/                  # (gitignored) Prisma generated client
 ├── dist/                       # (gitignored) Production build output
 ├── API Documentation/          # Detailed endpoint docs per module
+├── inst/                       # Assignment briefs (GearUp variant, requirements & rubric)
+├── requirements.md             # GearUp product spec
 ├── .env.example                # Environment variable template
 ├── package.json
 ├── tsconfig.json
@@ -201,9 +204,10 @@ Open `.env` and update each variable:
 | `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry duration | `7d` |
 | `STRIPE_SECRET_KEY` | Your Stripe secret key | `sk_test_...` |
 | `STRIPE_WEBHOOK_SECRET` | Your Stripe webhook signing secret | `whsec_...` |
-| `STRIPE_PRODUCT_PRICE_ID` | *(Currently unused — set any value)* | `price_...` |
+| `STRIPE_PRODUCT_PRICE_ID` | *(Currently unused; any value works)* | `price_...` |
+| `GOOGLE_CLIENT_ID` | Google Sign-In OAuth client ID (optional — leave blank to disable) | `xxxxxxxx.apps.googleusercontent.com` |
 
-> **⚠️ Important:** The `FRONTEND_URL` variable is **required** for CORS but is missing from the older `.env.example`. Make sure to add it manually.
+> **📝 Note:** `.env.example` mirrors `src/config/index.ts` (the source of truth for env var names) and includes `FRONTEND_URL` and `GOOGLE_CLIENT_ID`. If you add new env vars, update both files.
 
 ### 4. Set up the database
 
@@ -285,6 +289,7 @@ All responses follow this standard format:
 |---|---|---|---|
 | `POST` | `/api/auth/register` | ❌ Public | Register a new Customer or Provider |
 | `POST` | `/api/auth/login` | ❌ Public | Login and receive JWT tokens |
+| `POST` | `/api/auth/google` | ❌ Public | Sign in with a Google ID token; creates/logs in the user |
 | `GET` | `/api/auth/me` | ✅ Any Role | Get current user's profile |
 
 #### 🏕️ Gear — `/api/gear`
@@ -366,12 +371,16 @@ GearUp uses **JWT (JSON Web Token)** authentication stored in httpOnly cookies.
 
 ### How it works:
 
-1. **Register** or **Login** via `/api/auth/register` or `/api/auth/login`
+1. **Register** or **Login** via `/api/auth/register` or `/api/auth/login` (or continue with Google via `/api/auth/google`)
 2. On success, the server sets two httpOnly cookies:
    - `accessToken` — Short-lived token used for API authorization
    - `refreshToken` — Longer-lived token (refresh endpoint not yet implemented)
 3. All subsequent requests automatically include the cookies
 4. Protected routes verify the `accessToken` cookie and check the user's role
+
+### Notes:
+- Registration accepts only the `CUSTOMER` and `PROVIDER` roles — `ADMIN` accounts are created directly in the database
+- Google Sign-In: the client sends a Google ID token (`idToken`) to `/api/auth/google`; the server verifies it against `GOOGLE_CLIENT_ID`. New users default to the `CUSTOMER` role unless a role is provided. Google accounts have **no password**, so password login is unavailable for them. If `GOOGLE_CLIENT_ID` is unset, Google sign-in is disabled (returns 503).
 
 ### Roles:
 
